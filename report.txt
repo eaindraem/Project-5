@@ -1,0 +1,269 @@
+﻿Notable Obstacles
+A notable obstacle I encountered was designing the program. For example, I had a function that returned words (not word portions) and I would handle the word portion in the case when the whole word isn’t printable. However, I realized the cases I need to handle are increasing. So, I decided to just make my function return word portions and I can decide spaceCount by having a flag indicating how many spaces I should print out. (For example, if the previous word ends with a hyphen, I can set the space count to 0.)
+
+
+
+
+Pseudocode 
+int render(int lineLength, istream& infile, ostream& outfile)
+{
+        While (the end of file hasn’t been reached)
+                Call getToken function and store it in a boolean WordOrNot
+
+
+        If the line length entered is less than 2
+                Return 2
+
+
+        If wordOrNot is true
+                If token c string has @P@ and there wasn’t a consecutive paragraph break 
+                        Set paragraphBreak to true
+                        increment ConsecutiveParagraphBreak
+                        Reset tokenLength to 0 
+                        Reset outputLineIndex to 0
+                        Continue on with the loop 
+                Else if token c string has @P@ and there was a consecutive paragraph break 
+                        Increment consecutiveParagraphBreak
+                        Reset tokenLength to 0
+                        Reset OutputLineIndex to 0
+                        Continue on with the loop
+
+
+                If the wordPortion length is greater than lineLength 
+                        Set wordLongerThanMaxLength to true 
+                        If specialChar function returns true
+                                Increment spaceCount
+                        Set Nloop to tokenLength/linelenght
+                        If tokenLength/Linelength doesn’t have a remainder of 0
+                                Increment Nloop 
+                        If outputlineindex isn’t 0
+                                Print a newline
+                                Set outputlineindex to 0 
+                                Set space count to 0
+                        While outputlineindex hasn’t reached line length and token hasn’t ended 
+                                Print character at the index of token 
+                                Increment the tokenindex 
+                                Increment outputlineindex
+                        Reset outputlineindex 
+
+
+                        While amount of Nloop hasn’t been printed yet 
+                                Print new line first 
+                                Set outputlineindex to 0 
+                                While outputlineindex hasn’t reached the linelength and token hasn’t ended 
+                                        Print character at the tokenindex
+                                        Increment tokenindex 
+                                        increment outputlineindex 
+                        
+                        If the word ends with hyphen 
+                                Increment spaceCount 
+                        Reset tokenLength to 0
+                        Increment spaceCount 
+
+
+                If tokenlength is less than linelength and outputlineindex+ tokenelength less than or equal to line length and first word of the line 
+                        If paragraph break is true and first word i strue 
+                                Set paragraph break to false 
+                                set firstWord to false 
+                        If paragraphbreak is true 
+                                Set paragraph break to false 
+                        Set space count to 0 
+                        Print the token 
+                        Increment the spacecount 
+
+
+                        If special char function is true 
+                                Increment the spaceCount 
+
+
+                        Add tokenLength to outputlineIndex 
+                        Reset tokenLength to 0 
+
+
+                        If token has a word in it 
+                                Set consecutiveparagraphbreak to 0 
+
+
+                        If hyphen is true
+                                decrement spaceCount 
+
+
+                        Set firstword to false 
+
+
+                If not first word of the line and tokenlength is less than line length 
+                        if paragraph break and firstword is true 
+                                Continue through the loop 
+                        If paragraph break is true 
+                                Print newline 
+                                Set paragraph break to false 
+                        Print SpaceCount amount of spaces using for loop 
+                        Reset SpaceCount to 0 
+                        Print out token 
+                        Increment SpaceCount 
+                        If specialChar function returns true
+                                Increment spaceCount 
+                        add tokenLength to Ouputlineindex
+                        Reset tokenLength to 0 
+                        If token isn’t empty
+                                Set consecutiveParagraphBreak to 0 
+                        Set firstWord to false 
+                        If hyphen is true
+                                Decrement spaceCount 
+
+
+                If ( tokenlength is less than linelength or hyphen exist ) and the word+spaces don’t fit on the lineLength 
+                        If paragraph break and first word are both true
+                                Continue 
+                        If paragraph break is true
+                                Print new line 
+                                Set paragraph break to false
+                        if index isn’t at start
+                                print a newline
+                                Reset outputlineindex to 0 
+                                Reset spaceCount to 0
+                        print the token 
+                        Increment the spaceCount         
+                        if specialChar function returns true
+                                Increment specialChar
+                        Add tokenLength to outputLineIndex 
+                        Reset tokenLength to 0 
+                        If token isn’t empty 
+                                Set consecutiveParagraphBreak to 0 
+                        If hyphen exists 
+                                Decrement spaceCount 
+                        Set Firstword to false
+        If word or not isn’t true
+                continue
+
+
+        If printNewLineIntheEnd is true
+                Print New Line 
+        if wordLongerthanMaxLength is true. 
+                Return 1
+        Return 0
+}
+
+
+bool specialChar(const char *token, int& tokenLength)
+{
+        Set lastChar as the last character in the token 
+        if last char is any of these characters
+                .
+                ?
+                !
+                :
+                        Return true
+        If not
+                Return false 
+}
+
+
+bool getToken(int lineLength, istream& infile, ostream& outfile, char& c, char token[], int& tokenLength, bool& hyphen, bool& printNewLineInTheEnd)
+{
+        Set tokenIndex to 0
+        
+        If end of the file
+                Return false 
+        If c is a space 
+                Return false 
+
+
+
+
+        Do these 
+                Set c to the character at tokenIndex in token
+                Increment tokenIndex
+                Increment TokenLength
+                Set printNewLineInTheEnd to true 
+        While next character exists and not a space and not a hyphen
+
+
+        If c is a hyphen
+                Set hyphen to true 
+                attach - to token
+                attach null byte after the token 
+                Increment tokenLength 
+                Set tokenIndex to 0
+        If not a hyphen
+                Attach null byte to the token         
+                Set tokenIndex to 0
+
+
+        Return true
+}
+Test Cases
+Word separating 
+	
+
+	Swan’s Nest
+	To test that tokens are detected well 
+	I-want-to-pay
+	To test that word portions are detected well 
+	I-want-to--pay
+	To test that the second hyphen is detected as a separate word. 
+	Word Fitting in a line (assume 10 line max)
+	
+
+	Hello my name is Melody Myae I am a student at UCLA I am computer science major
+	To test that the program fits as many word/word portion in an output line without exceeding the line length 
+Also, to test that the last line of output ends with a newline
+	Hello   my name is     Melody Myae I am a student at UCLA I am computer
+
+
+ science major
+	To test that program fits word/word portion as many as possible without exceeding the line length no matter how many space or newline or tab exists between the words in the input
+	      I hope I get 100 on this project. 
+	To test that the first word portion isn’t preceded by any blanks
+	Paragraph Breaks
+	
+
+	I am @P@ Melody
+	To test that @P@ prints out a single paragraph break, the word @P@ doesn’t get printed out
+	  hi!  she her him he           hey @P@        @P@        who what 
+	To test consecutive @P@ works as single @P@
+	@P@ he she      they them 
+	To test @P@ doesn’t get printed out if it is the first word. 
+	he she us at                 L k w @P@
+	To test @P@ in the end doesn’t get printed out 
+	CS31@P@ UCLA Proj5
+	To test that @P@ connected with other characters doesn’t count as a paragraph break
+	Special Punctuations
+	
+
+	Hello! I 
+	To test that special punctuations (exclamation mark) print out two spaces before the next word
+	Yes. No
+	To test that period prints out two spaces before the next word
+	What is your name? Hello
+	To test that question marks print out two spaces before the next word
+	Name: Melody Myae
+	To test that colon prints out two spaces after it. 
+	Hello I am Melody. 
+	To test that no space gets printed out after, even though it is a special punctuation.
+	word/wordportion is longer than line length
+	
+
+	supercalifragilisticexpialidociousIamPrettyLittleGirl
+	To test that long words are being chopped up 
+and the program returns 1  
+	he. supercalifragilisticexpialidociousIamPrettyLittleGirl I am good 
+
+
+	To test that words after the extra long word prints well with good index. 
+	super-califragilisti-cexpialidocio-us
+	To test that extra long word portions can also be chopped up to print in a line 
+	Empty File
+	
+
+	
+
+	To test that if empty file, don’t print new line, and return 0  
+	Invalid Line Length
+	
+
+	Line Length = 0
+	return 2
+	
+
+My program handles all the above test cases well.
